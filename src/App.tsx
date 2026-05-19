@@ -1,33 +1,16 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
-
-import {
-  useEffect,
-} from "react";
-
-import {
-  useDispatch,
-} from "react-redux";
-
+import {BrowserRouter,Routes, Route,} from "react-router-dom";
+import {useEffect,} from "react";
+import {useDispatch,} from "react-redux";
 import Login from "./pages/auth/Login";
-
 import Dashboard from "./pages/dashboard/Dashboard";
-
 import Register from "./pages/auth/Register";
-
 import VerifyEmail from "./pages/auth/VerifyEmail";
-
 import PrivateRoute from "./routes/PrivateRoute";
-
 import api from "./services/api";
 import PublicRoute from "./routes/PublicRoute";
-
-import {
-  setUser,
-} from "./store/slices/authSlice";
+import {setUser,} from "./store/slices/authSlice";
+import MainLayout from "./layout/MainLayout";
+import Categories from "./pages/categories/Categories";
 
 function App() {
 
@@ -118,20 +101,25 @@ if (token) {
   </Route>
 
   <Route
+  element={<PrivateRoute />}
+>
 
-    element={<PrivateRoute />}
-
+  <Route
+    element={<MainLayout />}
   >
 
     <Route
-
       path="/dashboard"
-
       element={<Dashboard />}
-
     />
+    <Route
+  path="/categories"
+  element={<Categories />}
+/>
 
   </Route>
+
+</Route>
 
 </Routes>
     </BrowserRouter>

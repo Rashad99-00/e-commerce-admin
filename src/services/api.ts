@@ -34,11 +34,16 @@ api.interceptors.response.use(
       error.config;
 
     if (
-      error.response.status === 401 &&
+
+      error.response?.status ===
+        401 &&
+
       !originalRequest._retry
+
     ) {
 
-      originalRequest._retry = true;
+      originalRequest._retry =
+        true;
 
       try {
 
@@ -47,38 +52,43 @@ api.interceptors.response.use(
             "refreshToken"
           );
 
-        const res = await axios.post(
-          "http://161.97.154.119/intern-api/api/auth/refresh",
-          {
-            refreshToken,
-          }
-        );
+        const res =
+          await axios.post(
+            "http://161.97.154.119/intern-api/api/auth/refresh",
+            {
+              refreshToken,
+            }
+          );
+
+        const newAccessToken =
+          res.data.data
+            .accessToken;
 
         localStorage.setItem(
           "accessToken",
-          res.data.accessToken
-        );
-
-        localStorage.setItem(
-          "refreshToken",
-          res.data.refreshToken
+          newAccessToken
         );
 
         originalRequest.headers.Authorization =
-          `Bearer ${res.data.accessToken}`;
+          `Bearer ${newAccessToken}`;
 
-        return api(originalRequest);
+        return api(
+          originalRequest
+        );
 
       } catch {
-        
+
         localStorage.clear();
 
-        window.location.href = "/";
+        window.location.href =
+          "/";
 
       }
     }
 
-    return Promise.reject(error);
+    return Promise.reject(
+      error
+    );
   }
 );
 
