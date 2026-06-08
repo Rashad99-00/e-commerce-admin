@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/intern-api/:path*",
+      "destination": "http://161.97.154.119/intern-api/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/"
+    }
+  ]
+}

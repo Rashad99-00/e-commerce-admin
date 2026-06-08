@@ -1,4 +1,4 @@
-import { getImageSrc } from "../../utils/image";
+import { getBackendImageUrl } from "../../utils/image";
 import type { Product, ProductForm, ProductImage } from "./types";
 
 export const emptyProductForm = (): ProductForm => ({
@@ -65,7 +65,7 @@ export function createProductPayload(
     stock: form.stock,
     isActive: form.isActive,
     categoryId: form.categoryId,
-    ...(mainImage ? { imageUrl: getImageSrc(mainImage), images } : {}),
+    ...(mainImage ? { imageUrl: getBackendImageUrl(mainImage), images } : {}),
     ...(!editId || form.sku.trim() !== originalSku
       ? { sku: form.sku.trim() }
       : {}),
