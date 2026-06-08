@@ -5,9 +5,13 @@ export function getImageSrc(url?: string | null) {
     return "";
   }
 
-  return /^https?:\/\//.test(url)
+  const path = /^https?:\/\//.test(url)
     ? url.replace(API_ORIGIN, "")
     : url;
+
+  return path.startsWith("/intern-api/uploads/")
+    ? path.replace("/intern-api/uploads/", "/api/uploads/")
+    : path;
 }
 
 export function getBackendImageUrl(url?: string | null) {

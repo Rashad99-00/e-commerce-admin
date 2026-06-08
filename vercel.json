@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/uploads/:path*",
+      "destination": "http://161.97.154.119/intern-api/uploads/:path*"
+    },
+    {
       "source": "/api/proxy/:path*",
       "destination": "/api/proxy?path=:path*"
     },
