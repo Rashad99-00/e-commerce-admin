@@ -1,185 +1,117 @@
 import {
+  KeyOutlined,
+} from "@ant-design/icons";
+
+import {
   Button,
   Form,
   Input,
-  Card,
-  Typography,
   message,
 } from "antd";
 
 import {
+  Link,
+  Navigate,
   useNavigate,
 } from "react-router-dom";
 
-import {
-  useState,
-} from "react";
-
 import api from "../../services/api";
+import { PENDING_VERIFICATION_EMAIL_KEY } from "../../constants/api";
+import { getApiErrorMessage } from "../../utils/apiError";
 
-const { Title } = Typography;
+import AuthShell from "./AuthShell";
+
+type VerifyValues = {
+  code: string;
+};
 
 function VerifyEmail() {
-
   const navigate = useNavigate();
+  const email =
+    sessionStorage.getItem(PENDING_VERIFICATION_EMAIL_KEY);
 
-  const [email, setEmail] =
-    useState("");
+  if (!email) {
+    return <Navigate to="/register" replace />;
+  }
 
   const handleVerify = async (
-    values: {
-      email: string;
-      code: string;
-    }
+    values: VerifyValues
   ) => {
-
     try {
+      await api.post("/auth/verify-email", {
+        email,
+        code: values.code.trim(),
+      });
 
-      const res = await api.post(
-        "/auth/verify-email",
-        values
-      );
-
-      localStorage.setItem(
-        "accessToken",
-        res.data.data.accessToken
-      );
-
-      localStorage.setItem(
-        "refreshToken",
-        res.data.data.refreshToken
-      );
-
-      message.success(
-        "Email verified"
-      );
-
-      navigate("/dashboard");
-
-    } catch {
-
-      message.error(
-        "Verification failed"
-      );
-
+      sessionStorage.removeItem(PENDING_VERIFICATION_EMAIL_KEY);
+      message.success("E-poçt ünvanınız təsdiqləndi. İndi daxil ola bilərsiniz.");
+      navigate("/login", { replace: true });
+    } catch (error) {
+      message.error(getApiErrorMessage(error, "Təsdiq kodu yanlışdır"));
     }
   };
 
-  const handleResendCode =
-    async () => {
-
-      try {
-
-        await api.post(
-          "/auth/resend-verification-code",
-          {
-            email,
-          }
-        );
-
-        message.success(
-          "Code sent again"
-        );
-
-      } catch {
-
-        message.error(
-          "Failed to resend code"
-        );
-
-      }
-    };
+  const handleResendCode = async () => {
+    try {
+      await api.post("/auth/resend-verification-code", {
+        email,
+      });
+      message.success("Yeni təsdiq kodu göndərildi");
+    } catch (error) {
+      message.error(
+        getApiErrorMessage(error, "Kodu yenidən göndərmək mümkün olmadı")
+      );
+    }
+  };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#f5f5f5",
-      }}
+    <AuthShell
+      badge="E-poçt təsdiqi"
+      title="Təsdiq kodunu daxil edin"
+      subtitle="E-poçt ünvanınıza göndərilən 6 rəqəmli kodu daxil edin."
     >
-
-      <Card
-        style={{
-          width: 450,
-          borderRadius: 20,
-        }}
+      <Form
+        className="auth-form"
+        layout="vertical"
+        requiredMark={false}
+        onFinish={(values: VerifyValues) => void handleVerify(values)}
       >
-
-        <Title
-          level={2}
-          style={{
-            textAlign: "center",
-            marginBottom: 30,
-          }}
+        <Form.Item
+          label="Təsdiq kodu"
+          name="code"
+          rules={[
+            { required: true, message: "Təsdiq kodunu daxil edin" },
+            { len: 6, message: "Kod 6 rəqəmdən ibarət olmalıdır" },
+            { pattern: /^\d{6}$/, message: "Yalnız rəqəm daxil edin" },
+          ]}
         >
-          Email tesdiq et
-        </Title>
+          <Input
+            className="auth-code-input"
+            maxLength={6}
+            prefix={<KeyOutlined />}
+            placeholder="000000"
+            inputMode="numeric"
+          />
+        </Form.Item>
 
-        <Form
-          layout="vertical"
-          onFinish={handleVerify}
+        <Button type="primary" htmlType="submit" block>
+          Təsdiq et
+        </Button>
+
+        <Button
+          className="auth-secondary-button"
+          block
+          onClick={() => void handleResendCode()}
         >
+          Kodu yenidən göndər
+        </Button>
 
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input
-              value={email}
-              onChange={(e) =>
-                setEmail(
-                  e.target.value
-                )
-              }
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Tesdiq kodu"
-            name="code"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            size="large"
-          >
-            Tesdiq et
-          </Button>
-
-          <Button
-            block
-            style={{
-              marginTop: 10,
-            }}
-            onClick={
-              handleResendCode
-            }
-          >
-            Kodu tekrar gonder
-          </Button>
-
-        </Form>
-
-      </Card>
-
-    </div>
+        <p className="auth-footnote">
+          Hesabınıza qayıtmaq istəyirsiniz?
+          <Link to="/login">Daxil olun</Link>
+        </p>
+      </Form>
+    </AuthShell>
   );
 }
 

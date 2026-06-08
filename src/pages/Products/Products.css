@@ -1,0 +1,150 @@
+.admin-products-header {
+  align-items: center;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.admin-products-header h1 {
+  color: #101828;
+  font-size: 30px;
+  margin-bottom: 6px;
+}
+
+.admin-products-header p {
+  color: #667085;
+}
+
+.admin-product-filters {
+  background: #f8faff;
+  border: 1px solid #e7ecf4;
+  border-radius: 12px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 14px;
+}
+
+.admin-product-filters .ant-input-affix-wrapper {
+  width: 270px;
+}
+
+.admin-product-filters .ant-select {
+  width: 210px;
+}
+
+.admin-product-filters .ant-input-number {
+  width: 135px;
+}
+
+.admin-products-table {
+  border: 1px solid #eaecf0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.admin-products-table .ant-table-thead th {
+  background: #f8fafc;
+}
+
+.admin-product-name {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.admin-product-name .ant-image,
+.admin-product-name img,
+.admin-no-image {
+  border-radius: 9px;
+  height: 52px;
+  object-fit: cover;
+  width: 52px;
+}
+
+.admin-no-image {
+  align-items: center;
+  background: #f2f4f7;
+  color: #98a2b3;
+  display: flex;
+  justify-content: center;
+}
+
+.admin-product-name strong,
+.admin-product-name span {
+  display: block;
+}
+
+.admin-product-name span {
+  color: #667085;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.admin-product-modal .ant-modal-content {
+  border-radius: 16px;
+}
+
+.admin-product-form-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.admin-product-form-grid .ant-input-number,
+.admin-product-form-grid .ant-select {
+  width: 100%;
+}
+
+.admin-product-form-grid.status-row {
+  grid-template-columns: 2fr 1fr;
+}
+
+.admin-product-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.admin-product-image {
+  border: 1px solid #e4e7ec;
+  border-radius: 10px;
+  height: 96px;
+  overflow: hidden;
+  position: relative;
+  width: 96px;
+}
+
+.admin-product-image .ant-image,
+.admin-product-image img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.admin-product-image > span {
+  background: #1677ff;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 10px;
+  left: 5px;
+  padding: 2px 7px;
+  position: absolute;
+  top: 5px;
+}
+
+.admin-product-image > div {
+  background: rgb(16 24 40 / 62%);
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.admin-product-image .ant-btn {
+  color: #fff;
+}

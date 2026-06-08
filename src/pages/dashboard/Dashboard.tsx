@@ -1,243 +1,33 @@
-import {
-  // Button,
-  Card,
-  Col,
-  Row,
-} from "antd";
-
-import {
-  useEffect,
-  useState,
-} from "react";
-
-// import {
-//   useNavigate,
-// } from "react-router-dom";
-
-import api from "../../services/api";
-
-type ProductType = {
-  id: string;
-  name: string;
-  price: string;
-  stock: number;
-  imageUrl: string;
-};
-
-type StatsType = {
-  totalCategories: number;
-  totalProducts: number;
-  totalUsers: number;
-  totalStock: number;
-  latestProducts: ProductType[];
-};
+import { message } from "antd";
+import { useEffect, useState } from "react";
+import { getApiErrorMessage } from "../../utils/apiError";
+import LatestProducts from "./components/LatestProducts";
+import StatsCards from "./components/StatsCards";
+import { getDashboardStats } from "./services";
+import type { DashboardStats } from "./types";
+import "./Dashboard.css";
 
 function Dashboard() {
-
-  // const navigate =
-  //   useNavigate();
-
-  const [stats, setStats] =
-    useState<StatsType | null>(
-      null
-    );
+  const [stats, setStats] = useState<DashboardStats | null>(null);
 
   useEffect(() => {
+    const loadStats = async () => {
+      try {
+        setStats(await getDashboardStats());
+      } catch (error) {
+        message.error(getApiErrorMessage(error, "Dashboard məlumatları yüklənmədi"));
+      }
+    };
 
-    const getStats =
-      async () => {
-
-        try {
-
-          const res =
-            await api.get(
-              "/dashboard/stats"
-            );
-
-          setStats(
-            res.data.data
-          );
-
-        } catch {
-
-          console.log(
-            "Stats failed"
-          );
-
-        }
-      };
-
-    getStats();
-
+    void loadStats();
   }, []);
 
-  // const handleLogout =
-  //   async () => {
-
-  //     try {
-
-  //       await api.post(
-  //         "/auth/logout"
-  //       );
-
-  //     } catch {
-
-  //       console.log(
-  //         "Logout failed"
-  //       );
-
-  //     } finally {
-
-  //       localStorage.clear();
-
-  //       navigate("/");
-
-  //     }
-  //   };
-
-  const cards = [
-    {
-      title: "Kateqoriyalar",
-      value:
-        stats?.totalCategories,
-    },
-    {
-      title: "Məhsullar",
-      value:
-        stats?.totalProducts,
-    },
-    {
-      title: "İstifadəçilər",
-      value:
-        stats?.totalUsers,
-    },
-    {
-      title: "Anbar",
-      value:
-        stats?.totalStock,
-    },
-  ];
-
   return (
-    <div>
-
-      <h1>
-        Dashboard
-      </h1>
-
-      <Row gutter={16}>
-
-        {cards.map((item) => (
-
-          <Col
-            span={6}
-            key={item.title}
-          >
-
-            <Card
-              title={item.title}
-              style={{
-                borderRadius: 12,
-              }}
-            >
-
-              <h2
-                style={{
-                  fontSize: 32,
-                  textAlign: "center",
-                  margin: 0,
-                }}
-              >
-
-                {item.value}
-
-              </h2>
-
-            </Card>
-
-          </Col>
-
-        ))}
-
-      </Row>
-
-      <h2
-        style={{
-          marginTop: 40,
-          marginBottom: 20,
-        }}
-      >
-        Son Məhsullar
-      </h2>
-
-      <Row gutter={16}>
-
-        {stats?.latestProducts.map(
-          (product) => (
-
-            <Col
-              span={6}
-              key={product.id}
-            >
-
-              <Card
-                cover={
-                  <img
-                    src={
-                      product.imageUrl
-                    }
-                    alt={
-                      product.name
-                    }
-                    style={{
-                      height: 220,
-                      objectFit:
-                        "cover",
-                    }}
-                  />
-                }
-              >
-
-                <h3>
-                  {product.name}
-                </h3>
-
-                <p>
-                  Qiymət:
-                  {" "}
-                  {product.price}
-                  ₼
-                </p>
-
-                <p>
-                  Stok:
-                  {" "}
-                  {product.stock}
-                </p>
-
-              </Card>
-
-            </Col>
-
-          )
-        )}
-
-      </Row>
-
-      {/* <Button
-        danger
-        style={{
-          marginTop: 20,
-        }}
-        onClick={
-          handleLogout
-        }
-      >
-
-        Logout
-
-      </Button> */}
-
+    <div className="dashboard-page">
+      <h1>Dashboard</h1>
+      <StatsCards stats={stats} />
+      <h2>Son Məhsullar</h2>
+      <LatestProducts products={stats?.latestProducts ?? []} />
     </div>
   );
 }

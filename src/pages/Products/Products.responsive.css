@@ -1,0 +1,43 @@
+@media (max-width: 850px) {
+  .admin-products-header,
+  .admin-product-filters {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-products-header h1 {
+    font-size: 25px;
+  }
+
+  .admin-products-header .ant-btn,
+  .admin-product-filters .ant-input-affix-wrapper,
+  .admin-product-filters .ant-select,
+  .admin-product-filters .ant-input-number {
+    width: 100%;
+  }
+
+  .admin-product-form-grid,
+  .admin-product-form-grid.status-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-product-modal {
+    max-width: calc(100vw - 24px);
+    top: 12px;
+  }
+
+  .admin-products-table .ant-pagination {
+    margin-inline: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-product-filters {
+    padding: 10px;
+  }
+
+  .admin-product-image {
+    height: 82px;
+    width: 82px;
+  }
+}

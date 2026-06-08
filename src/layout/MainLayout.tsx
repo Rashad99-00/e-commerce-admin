@@ -1,143 +1,50 @@
-import {Layout, Menu, Button,} from "antd";
-
-import {
-  LogoutOutlined,
-} from "@ant-design/icons";
-
-import {
-  Outlet,
-  useNavigate,
-} from "react-router-dom";
-
+import { Layout } from "antd";
+import { useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import api from "../services/api";
-
-const {
-  Header,
-  Sider,
-  Content,
-  Footer,
-} = Layout;
+import AdminHeader from "./components/AdminHeader";
+import AdminSidebar from "./components/AdminSidebar";
+import "./MainLayout.css";
 
 function MainLayout() {
+  const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
-  const navigate =
-    useNavigate();
+  const handleBreakpoint = (broken: boolean) => {
+    setIsMobile(broken);
+    setCollapsed(broken);
+  };
 
-  const handleLogout =
-    async () => {
-
-      try {
-
-        await api.post(
-          "/auth/logout"
-        );
-
-      } catch {
-
-        console.log(
-          "Logout failed"
-        );
-
-      } finally {
-
-        localStorage.clear();
-
-        navigate("/login");
-
-      }
-    };
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      // Local session still needs to be cleared when the server is unavailable.
+    } finally {
+      localStorage.clear();
+      navigate("/login");
+    }
+  };
 
   return (
-    <Layout
-      style={{
-        minHeight: "100vh",
-      }}
-    >
-
-      <Sider>
-
-        <div
-          style={{
-            color: "white",
-            padding: 20,
-            fontSize: 20,
-            fontWeight: "bold",
-          }}
-        >
-          Admin Panel
-        </div>
-
-        <Menu
-  theme="dark"
-  mode="inline"
-  onClick={({ key }) =>
-
-  navigate(key)
-
-}   
-  items={[
-    {
-      key: "/dashboard",
-      label: "Dashboard",
-    },
-    {
-      key: "/categories",
-      label: "Kateqoriyalar",
-    },
-
-  ]}
-
-/>
-
-      </Sider>
-
-      <Layout>
-
-        <Header
-          style={{
-            background: "white",
-            display: "flex",
-            justifyContent:
-              "flex-end",
-            alignItems: "center",
-          }}
-        >
-
-          <Button
-            danger
-            icon={<LogoutOutlined />}
-            onClick={
-              handleLogout
-            }
-          >
-            Çıxış
-          </Button>
-
-        </Header>
-
-        <Content
-          style={{
-            margin: 20,
-            padding: 20,
-            background: "white",
-            borderRadius: 10,
-          }}
-        >
-
+    <Layout className="admin-shell">
+      <AdminSidebar
+        collapsed={collapsed}
+        onBreakpoint={handleBreakpoint}
+        onNavigate={() => isMobile && setCollapsed(true)}
+      />
+      <Layout className="admin-body">
+        <AdminHeader
+          isMobile={isMobile}
+          onMenu={() => setCollapsed((current) => !current)}
+          onLogout={() => void handleLogout()}
+        />
+        <Layout.Content className="admin-content">
           <Outlet />
-
-        </Content>
-
-        <Footer
-          style={{
-            textAlign: "center",
-          }}
-        >
-          Admin Panel ©2026
-        </Footer>
-
+        </Layout.Content>
+        <Layout.Footer className="admin-footer">Admin Panel ©2026</Layout.Footer>
       </Layout>
-
     </Layout>
   );
 }

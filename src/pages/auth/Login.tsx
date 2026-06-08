@@ -1,9 +1,12 @@
 import {
+  LockOutlined,
+  MailOutlined,
+} from "@ant-design/icons";
+
+import {
   Button,
   Form,
   Input,
-  Card,
-  Typography,
   message,
 } from "antd";
 
@@ -12,148 +15,96 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import api from "../../services/api";
-import { useDispatch,}from "react-redux";
-import { setUser }from "../../store/slices/authSlice";
+import {
+  useDispatch,
+} from "react-redux";
 
-const { Title } = Typography;
+import api from "../../services/api";
+import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY } from "../../constants/api";
+import { getApiErrorMessage } from "../../utils/apiError";
+
+import {
+  setUser,
+} from "../../store/slices/authSlice";
+
+import AuthShell from "./AuthShell";
+
+type LoginValues = {
+  email: string;
+  password: string;
+};
 
 function Login() {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (
-    values: {
-      email: string;
-      password: string;
-    }
+    values: LoginValues
   ) => {
-
     try {
+      const res = await api.post("/auth/login", values);
+      const data = res.data.data;
 
-      const res = await api.post(
-        "/auth/login",
-        values
-      );
-      console.log(res.data);
-
-dispatch(
-  setUser(
-    res.data.data.user
-  )
-);
-
-localStorage.setItem(
-  "accessToken",
-  res.data.data.accessToken
-);
-
-      localStorage.setItem(
-        "refreshToken",
-        res.data.data.refreshToken
-      );
-
-      message.success(
-        "Login successful"
-      );
-
+      dispatch(setUser(data.user));
+      localStorage.setItem(ACCESS_TOKEN_KEY, data.accessToken);
+      localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+      message.success("Xoş gəldiniz!");
       navigate("/dashboard");
-
-    } catch {
-
-      message.error(
-        "Login failed"
-      );
-
+    } catch (error) {
+      message.error(getApiErrorMessage(error, "Daxil olmaq mümkün olmadı"));
     }
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#f5f5f5",
-      }}
+    <AuthShell
+      badge="Admin girişi"
+      title="Hesabınıza daxil olun"
+      subtitle="Mağazanızı idarə etmək üçün giriş məlumatlarınızı daxil edin."
+      showBack={false}
     >
-
-      <Card
-        style={{
-          width: 450,
-          borderRadius: 20,
-        }}
+      <Form
+        className="auth-form"
+        layout="vertical"
+        requiredMark={false}
+        onFinish={(values: LoginValues) => void handleLogin(values)}
       >
-
-        <Title
-          level={2}
-          style={{
-            textAlign: "center",
-            marginBottom: 30,
-          }}
+        <Form.Item
+          label="E-poçt ünvanı"
+          name="email"
+          rules={[
+            { required: true, message: "E-poçt ünvanını daxil edin" },
+            { type: "email", message: "Düzgün e-poçt ünvanı daxil edin" },
+          ]}
         >
-          Giris
-        </Title>
+          <Input
+            prefix={<MailOutlined />}
+            placeholder="name@example.com"
+          />
+        </Form.Item>
 
-        <Form
-          layout="vertical"
-          onFinish={handleLogin}
+        <Form.Item
+          label="Parol"
+          name="password"
+          rules={[
+            { required: true, message: "Parolu daxil edin" },
+          ]}
         >
+          <Input.Password
+            prefix={<LockOutlined />}
+            placeholder="Parolunuz"
+          />
+        </Form.Item>
 
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+        <Button type="primary" htmlType="submit" block>
+          Daxil ol
+        </Button>
 
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            size="large"
-          >
-            Daxil ol
-          </Button>
-
-          <p
-            style={{
-              textAlign: "center",
-              marginTop: 20,
-            }}
-          >
-            Hesabin yoxdur?
-
-            <Link to="/register">
-              {" "}
-              Qeydiyyatdan kec
-            </Link>
-
-          </p>
-
-        </Form>
-
-      </Card>
-
-    </div>
+        <p className="auth-footnote">
+          Hesabınız yoxdur?
+          <Link to="/register">Qeydiyyatdan keçin</Link>
+        </p>
+      </Form>
+    </AuthShell>
   );
 }
 

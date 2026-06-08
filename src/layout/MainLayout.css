@@ -1,0 +1,68 @@
+.admin-shell {
+  min-height: 100vh;
+}
+
+.admin-sider {
+  bottom: 0;
+  height: 100vh;
+  left: 0;
+  overflow: auto;
+  position: fixed !important;
+  top: 0;
+  z-index: 100;
+}
+
+.admin-logo {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 20px;
+}
+
+.admin-body {
+  margin-left: 200px;
+  min-height: 100vh;
+  transition: margin-left 0.2s ease;
+}
+
+.admin-header {
+  align-items: center;
+  background: #fff;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-inline: 26px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.admin-menu-button {
+  margin-right: auto;
+}
+
+.admin-content {
+  background: #fff;
+  border-radius: 12px;
+  margin: 20px;
+  padding: 20px;
+}
+
+.admin-footer {
+  text-align: center;
+}
+
+@media (max-width: 991px) {
+  .admin-body {
+    margin-left: 0;
+  }
+
+  .admin-header {
+    padding-inline: 14px;
+  }
+
+  .admin-content {
+    margin: 12px;
+    padding: 14px;
+  }
+}

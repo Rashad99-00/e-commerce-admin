@@ -1,0 +1,26 @@
+@media (max-width: 760px) {
+  .admin-categories-header,
+  .admin-category-stat-grid {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-categories-header h1 {
+    font-size: 25px;
+  }
+
+  .admin-categories-header .ant-btn,
+  .admin-category-filters .ant-input-affix-wrapper,
+  .admin-category-stat {
+    width: 100%;
+  }
+
+  .admin-category-modal {
+    max-width: calc(100vw - 24px);
+    top: 12px;
+  }
+
+  .admin-categories-table .ant-pagination {
+    margin-inline: 10px;
+  }
+}

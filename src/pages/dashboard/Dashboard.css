@@ -1,0 +1,61 @@
+.dashboard-page h1 {
+  color: #101828;
+  font-size: 30px;
+  margin: 0 0 22px;
+}
+
+.dashboard-page h2 {
+  color: #101828;
+  font-size: 21px;
+  margin: 34px 0 18px;
+}
+
+.dashboard-stat-card {
+  border-radius: 12px;
+  height: 100%;
+}
+
+.dashboard-stat-card strong {
+  color: #101828;
+  display: block;
+  font-size: clamp(27px, 4vw, 34px);
+  text-align: center;
+}
+
+.dashboard-product {
+  border-radius: 12px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.dashboard-product img {
+  background: #f2f4f7;
+  height: 208px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.dashboard-product h3 {
+  color: #101828;
+  margin: 0 0 9px;
+}
+
+.dashboard-product p {
+  color: #475467;
+  margin: 4px 0;
+}
+
+@media (max-width: 575px) {
+  .dashboard-page h1 {
+    font-size: 25px;
+    margin-bottom: 18px;
+  }
+
+  .dashboard-page h2 {
+    margin-top: 27px;
+  }
+
+  .dashboard-product img {
+    height: 190px;
+  }
+}
