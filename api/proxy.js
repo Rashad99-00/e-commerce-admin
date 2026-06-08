@@ -31,9 +31,7 @@ export const config = {
 };
 
 export default async function handler(req, res) {
-  const path = Array.isArray(req.query.path)
-    ? req.query.path.join("/")
-    : req.query.path;
+  const path = String(req.query.path ?? "");
   const query = new URLSearchParams(req.query);
 
   query.delete("path");
